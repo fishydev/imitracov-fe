@@ -21,10 +21,11 @@ const routes = [
     path: "/admin",
     name: "HomeAdmin",
     component: HomeAdmin
-  },
+  }
 ];
 
 const router = new VueRouter({
+  mode: "history",
   routes
 });
 
