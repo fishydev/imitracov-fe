@@ -57,7 +57,8 @@
                             color="success"
                             class="my-3"
                             type="submit"
-                            form="login_form">Login</v-btn>
+                            form="login_form"
+                            href="/admin">Login</v-btn>
                     </v-form>
                 </v-card-text>
             </v-card>
