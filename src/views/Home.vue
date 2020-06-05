@@ -1,5 +1,6 @@
 <template>
     <div class="home">
+        <NavbarUser />
         <v-card class="mx-auto pa-8 ma-5" max-width="1200" color="blue darken-3">
             <p class="display-2 white--text text-center" >
                 Data Pemantauan Kasus Covid-19 WNA
@@ -106,6 +107,8 @@
 </template>
 
 <script>
+import NavbarUser from '../components/NavbarUser.vue'
+
 export default {
     data() {
         return {
@@ -196,6 +199,10 @@ export default {
                 }
             },
         };
+    },
+
+    components: {
+        NavbarUser,
     }
 }
 </script>

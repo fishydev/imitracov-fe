@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <Navbar />
+        <!--<Navbar /> -->
         <v-content>
             <router-view></router-view>
         </v-content>
@@ -10,12 +10,12 @@
 
 <script>
 import Footer from './components/Footer'
-import Navbar from './components/Navbar'
+/*import Navbar from './components/Navbar'*/
 
 export default {
     name: 'App',
     components: {
-        Footer, Navbar,
+        Footer, /*Navbar,*/
     },
     data: () => ({
     }),
