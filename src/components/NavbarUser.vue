@@ -11,7 +11,7 @@
         </v-toolbar>
         <v-navigation-drawer v-model="drawer" absolute temporary>
             <v-list nav dense>
-                <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
+                <v-list-item-group active-class="deep-purple--text text--accent-4">
                     <v-list-item href="/">
                         <v-list-item-icon>
                             <v-icon>mdi-home</v-icon>
@@ -64,7 +64,6 @@
                     <v-form
                         id="login_form"
                         ref="form_login"
-                        v-model="valid"
                         lazy-validation>
                         <v-text-field
                             label="Email"></v-text-field>
@@ -96,6 +95,7 @@
       drawer: false,
       overlayLogin: false,
       dialog: false,
+      show_password: false
     }),
   }
 </script>
