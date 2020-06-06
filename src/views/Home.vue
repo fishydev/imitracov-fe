@@ -26,7 +26,6 @@
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
-                                        v-model="search"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -55,7 +54,6 @@
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
-                                        v-model="search"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -84,16 +82,15 @@
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
-                                        v-model="search"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
                                         hide-details
                                     ></v-text-field>
                                     <v-data-table
-                                        :headers="headersPosNeg"
-                                        :items="dataPosNeg"
-                                        :search="searchPosNeg"
+                                        :headers="headerPN"
+                                        :items="dataPN"
+                                        :search="searchPN"
                                     ></v-data-table>
                                 </v-list-item-subtitle>
                             </v-list-item-content>
@@ -107,6 +104,7 @@
 </template>
 
 <script>
+const axios = require('axios')
 import NavbarUser from '../components/NavbarUser.vue'
 
 export default {
@@ -118,72 +116,34 @@ export default {
                     text: 'Negara Asal',
                     align: 'start',
                     sortable: false,
-                    value: 'negaraODP',
+                    value: 'negara',
                 },
-                { text: 'Jumlah', value: 'jumlahODP'},
+                { text: 'Jumlah', value: 'jumlah'},
             ],
-            dataODP : [
-                {
-                    negaraODP : 'Singapura',
-                    jumlahODP : 10,
-                },
-                {
-                    negaraODP : 'Amerika',
-                    jumlahODP : 10,
-                },
-            ],
+            dataODP : [],
             searchPDP: '',
             headersPDP: [
                 {
                     text: 'Negara Asal',
                     align: 'start',
                     sortable: false,
-                    value: 'negaraPDP',
+                    value: 'negara',
                 },
-                { text: 'Jumlah', value: 'jumlahPDP'},
+                { text: 'Jumlah', value: 'jumlah'},
             ],
-            dataPDP : [
-                {
-                    negaraPDP : 'Filipna',
-                    jumlahPDP : 10,
-                },
-                {
-                    negaraPDP : 'Malaysia',
-                    jumlahPDP : 10,
-                },
-                {
-                    negaraPDP : 'Singapura',
-                    jumlahPDP : 10,
-                },
-            ],
-            searchPosNeg: '',
-            headersPosNeg: [
+            dataPDP : [],
+            searchPN: '',
+            headerPN: [
                 {
                     text: 'Negara Asal',
                     align: 'start',
                     sortable: false,
-                    value: 'negaraPosNeg',
+                    value: 'negara',
                 },
                 { text: 'Positif', value: 'positif'},
                 { text: 'Negatif', value: 'negatif'},
             ],
-            dataPosNeg : [
-                {
-                    negaraPosNeg : 'Filipna',
-                    positif : 20,
-                    negatif : 10,
-                },
-                {
-                    negaraPosNeg : 'Malaysia',
-                    positif : 20,
-                    negatif : 10,
-                },
-                {
-                    negaraPosNeg : 'Singapura',
-                    positif : 0,
-                    negatif : 30,
-                },
-            ],
+            dataPN : [],
             labels: ["ODP", "PDP", "Negatif", "Positif"],
             datasets: [
             {
@@ -203,6 +163,49 @@ export default {
 
     components: {
         NavbarUser,
+    },
+
+    beforeMount() {
+        axios.get('https://imitracov-be.herokuapp.com/api/patient').then((res) => {
+            var pasien = res.data
+
+            var countODP = pasien.filter((pasienODP) => { return pasienODP.status == "ODP"})
+            var countPDP = pasien.filter((pasienPDP) => { return pasienPDP.status == "PDP"})
+            var countPos = pasien.filter((pasienPos) => { return pasienPos.status == "Positif"})
+            var countNeg = pasien.filter((pasienPos) => { return pasienPos.status == "Negatif"})
+            
+            var occurencesODP = countODP.reduce(function (r, row) {
+                r[row.asalBerangkat] = ++r[row.asalBerangkat] || 1
+                return r
+            }, {})
+
+            this.dataODP = Object.keys(occurencesODP).map(function (negara) {
+                return { negara: negara, jumlah: occurencesODP[negara] }
+            })
+
+            var occurencesPDP = countPDP.reduce(function (r, row) {
+                r[row.asalBerangkat] = ++r[row.asalBerangkat] || 1
+                return r
+            }, {})
+
+            this.dataPDP = Object.keys(occurencesPDP).map(function (negara) {
+                return { negara: negara, jumlah: occurencesPDP[negara] }
+            })
+
+            var occurencesPos = countPos.reduce(function (r, row) {
+                r[row.asalBerangkat] = ++r[row.asalBerangkat] || 1
+                return r
+            }, {})
+
+            var occurencesNeg = countNeg.reduce(function (r, row) {
+                r[row.asalBerangkat] = ++r[row.asalBerangkat] || 1
+                return r
+            }, {})
+
+            this.dataPN = Object.keys(occurencesPos, occurencesNeg).map(function (negara) {
+                return { negara: negara, positif: occurencesPos[negara], negatif: occurencesNeg[negara]}
+            })
+        })
     }
 }
 </script>
