@@ -52,22 +52,25 @@
         <!-- overlay login -->
         <v-overlay :value="overlayLogin">
             <v-card class="mx-5" outlined light>
-                <v-toolbar dense flat>
-                    <v-toolbar-title>Log in</v-toolbar-title>
+                <v-card-title>
+                    Login Admin
                     <v-spacer></v-spacer>
                     <v-btn text @click="overlayLogin = !overlayLogin" :ripple="false">
                         <v-icon right>mdi-close</v-icon>
                     </v-btn>
-                </v-toolbar>
+                </v-card-title>
                 <v-divider></v-divider>
                 <v-card-text class="pb-0">
                     <v-form
                         id="login_form"
                         ref="form_login"
-                        lazy-validation>
+                        lazy-validation
+                        @submit.prevent="loginAdmin">
                         <v-text-field
+                            v-model="username"
                             label="Email"></v-text-field>
                         <v-text-field
+                            v-model="password"
                             label="Password"
                             :append-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
                             :type="show_password ? 'text' : 'password'"
@@ -78,11 +81,13 @@
                             color="success"
                             class="my-3"
                             type="submit"
-                            form="login_form"
-                            href="/admin">Login</v-btn>
+                            form="login_form">Login</v-btn>
                     </v-form>
                 </v-card-text>
             </v-card>
+            <v-alert class="mt-4" type="error" :value="alert">
+                Wrong username or password
+            </v-alert>
         </v-overlay>
         <!-- overlay about -->
 
@@ -95,7 +100,28 @@
       drawer: false,
       overlayLogin: false,
       dialog: false,
-      show_password: false
+      show_password: false,
+      username: '',
+      password: '',
+      alert: false
     }),
+
+    methods: {
+        loginAdmin() {
+            if (this.$refs.form_login.validate()) {
+                if (this.username == 'admin' && this.password == 'admin') {
+                    localStorage.setItem('auth', 'true')
+                    this.$router.push({
+                        name: 'HomeAdmin'
+                    })
+                } else {
+                    this.loginMsg = 'Wrong username or password'
+                    this.alert = true
+                }
+            }
+
+
+        }
+    }
   }
 </script>
