@@ -42,7 +42,7 @@
                             </v-card-action>
                         </v-card>
                     </v-dialog>
-                    <v-list-item href="/">
+                    <v-list-item href="/" @click="logOut()">
                         <v-list-item-icon>
                             <v-icon>mdi-logout</v-icon>
                         </v-list-item-icon>
@@ -60,5 +60,12 @@
       drawer: false,
       dialog: false,
     }),
+
+    methods: {
+        logOut () {
+            localStorage.removeItem('auth')
+            this.$router.push({ name: 'Home'})
+        }
+    }
   }
 </script>
