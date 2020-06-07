@@ -20,12 +20,13 @@
                                 <v-list-item-title class="headline mb-1 text-center">
                                     ODP
                                 </v-list-item-title>
-                                <v-list-item-subtitle class="text-center">
+                                <v-list-item-subtitle class="text-center mb-2">
                                     ODP (Orang Dalam Pemantauan) adalah orang yang pernah melakukan kontak dengan pasien Covid-19
                                 </v-list-item-subtitle>
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
+                                        v-model="searchODP"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -48,12 +49,13 @@
                                 <v-list-item-title class="headline mb-1 text-center">
                                     PDP
                                 </v-list-item-title>
-                                <v-list-item-subtitle class="text-center">
+                                <v-list-item-subtitle class="text-center mb-2">
                                     PDP (Pasien Dalam Pengawasan) adalah orang yang penyakit gejala Covid-19
                                 </v-list-item-subtitle>
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
+                                        v-model="searchPDP"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -76,12 +78,13 @@
                                 <v-list-item-title class="headline mb-1 text-center">
                                     Negatif/ Positif
                                 </v-list-item-title>
-                                <v-list-item-subtitle class="text-center">
+                                <v-list-item-subtitle class="text-center mb-2">
                                     Hasil pemeriksaan orang yang berstatus siaga
                                 </v-list-item-subtitle>
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
+                                        v-model="searchPN"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -116,7 +119,7 @@ export default {
                     text: 'Negara Asal',
                     align: 'start',
                     sortable: false,
-                    value: 'negara',
+                    value: 'asalBerangkat',
                 },
                 { text: 'Jumlah', value: 'jumlah'},
             ],
@@ -127,7 +130,7 @@ export default {
                     text: 'Negara Asal',
                     align: 'start',
                     sortable: false,
-                    value: 'negara',
+                    value: 'asalBerangkat',
                 },
                 { text: 'Jumlah', value: 'jumlah'},
             ],
@@ -138,19 +141,17 @@ export default {
                     text: 'Negara Asal',
                     align: 'start',
                     sortable: false,
-                    value: 'negara',
+                    value: 'asalBerangkat',
                 },
-                { text: 'Positif', value: 'positif'},
-                { text: 'Negatif', value: 'negatif'},
+                { text: 'Positif', value: 'jumlahPositif'},
+                { text: 'Negatif', value: 'jumlahNegatif'},
             ],
             dataPN : [],
-            labels: ["ODP", "PDP", "Negatif", "Positif"],
-            datasets: [
-            {
-                data: [20, 30, 50, 40],
-                backgroundColor: ["Yellow", "Orange", "Red", "Green"]
-            }
-            ],
+            labels: ["ODP", "PDP", "Positif", "Negatif"],
+            datasets: [{
+                data: [2, 3, 2, 2],
+                backgroundColor: ["Yellow", "Orange","Green", "Red"]
+            }],
             option: {
                 title: {
                     display: true,
@@ -166,46 +167,23 @@ export default {
     },
 
     beforeMount() {
-        axios.get('https://imitracov-be.herokuapp.com/api/patient').then((res) => {
-            var pasien = res.data
 
-            var countODP = pasien.filter((pasienODP) => { return pasienODP.status == "ODP"})
-            var countPDP = pasien.filter((pasienPDP) => { return pasienPDP.status == "PDP"})
-            var countPos = pasien.filter((pasienPos) => { return pasienPos.status == "Positif"})
-            var countNeg = pasien.filter((pasienPos) => { return pasienPos.status == "Negatif"})
-            
-            var occurencesODP = countODP.reduce(function (r, row) {
-                r[row.asalBerangkat] = ++r[row.asalBerangkat] || 1
-                return r
-            }, {})
-
-            this.dataODP = Object.keys(occurencesODP).map(function (negara) {
-                return { negara: negara, jumlah: occurencesODP[negara] }
-            })
-
-            var occurencesPDP = countPDP.reduce(function (r, row) {
-                r[row.asalBerangkat] = ++r[row.asalBerangkat] || 1
-                return r
-            }, {})
-
-            this.dataPDP = Object.keys(occurencesPDP).map(function (negara) {
-                return { negara: negara, jumlah: occurencesPDP[negara] }
-            })
-
-            var occurencesPos = countPos.reduce(function (r, row) {
-                r[row.asalBerangkat] = ++r[row.asalBerangkat] || 1
-                return r
-            }, {})
-
-            var occurencesNeg = countNeg.reduce(function (r, row) {
-                r[row.asalBerangkat] = ++r[row.asalBerangkat] || 1
-                return r
-            }, {})
-
-            this.dataPN = Object.keys(occurencesPos, occurencesNeg).map(function (negara) {
-                return { negara: negara, positif: occurencesPos[negara], negatif: occurencesNeg[negara]}
-            })
+        axios.get('https://imitracov-be.herokuapp.com/api/conf').then((res) => {
+            let conf = res.data
+            this.dataPN = conf
         })
+
+        axios.get('http://imitracov-be.herokuapp.com/api/stats?status=ODP').then((res) => {
+            let odp = res.data
+            this.dataODP = odp
+
+        })
+
+        axios.get('http://imitracov-be.herokuapp.com/api/stats?status=PDP').then((res) => {
+            let pdp = res.data
+            this.dataPDP = pdp
+        })
+        
     }
 }
 </script>

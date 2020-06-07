@@ -26,6 +26,7 @@
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
+                                        v-model="searchODP"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -54,6 +55,7 @@
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
+                                        v-model="searchPDP"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -82,6 +84,7 @@
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
+                                        v-model="searchPos"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -110,6 +113,7 @@
                                 <v-divider></v-divider>
                                 <v-list-item-subtitle>
                                     <v-text-field
+                                        v-model="searchNeg"
                                         append-icon="mdi-magnify"
                                         label="Search"
                                         single-line
@@ -215,9 +219,10 @@ export default {
             { text: 'Status', value: 'status'}
         ],
         dataNeg : [],
-        labels: ["ODP", "PDP", "Negatif", "Positif"],
+        labels: ["ODP", "PDP", "Positif", "Negatif" ],
         datasets: [{
-            
+                data: [2, 3, 2, 2],
+                backgroundColor: ["Yellow", "Orange","Green", "Red"]
         }],
         option: {
             title: {
